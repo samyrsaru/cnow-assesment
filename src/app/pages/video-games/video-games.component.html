@@ -1,0 +1,133 @@
+<p *ngIf="!gamesFiltered.length" style="padding: 2rem;">
+    Video games list is loading ...
+</p>
+<div *ngIf="gamesFiltered.length"
+    class="flex flex-col md:flex-row gap-4 justify-center">
+
+    <!-- filters -->
+    <div class="flex flex-col"
+        style="background-color: #0e1a2b;
+        padding: 10px;
+        height: min-content"
+    >
+        <h1 class="text-lg mb-4">Filter Results</h1>
+        
+        <label for="name">Name (contains)</label>
+        <input #name type="text"
+            style="background-color: #182c47; text-transform: lowercase;"
+            class="mb-4"
+            [(ngModel)]="filterByName"
+            (keyup)="onFilterByNameChanged()"
+        >
+
+        <label for="minScore">Minimum Score</label>
+        <input #minScore type="number" min="1" max="10" step="1"
+            style="background-color: #182c47;"
+            class="mb-4"
+            (keyup)="onFilterByScoreChanged($event)"
+        />
+        
+        <label for="orderBy">Order by</label>
+        <div class="flex mb-6">
+            <button (click)="toggleOrder()"
+                style="
+                    background-color: #5692e8;
+                    width: 24px;
+                    height: 24px;
+                "
+            >
+                <p *ngIf="orderAscendent">^</p>
+                <p *ngIf="!orderAscendent">\/</p>
+            </button>
+            <select name="filters" id="filters"
+                style="background-color: #182c47;"
+                class="flex-grow"
+                [(ngModel)]="filterBy"
+                (change)="filterByChanged()"
+            >
+                <option value="date">Release Date</option>
+                <option value="score">Score</option>
+                <option value="name">Name</option>
+            </select>
+        </div>
+
+        <button (click)="onClear()"
+            style="
+                    background-color: #5692e8;
+                    padding: 5px;
+                    width: min-content;
+                    justify-self: right;
+                "
+        >
+            Clear
+        </button>
+    </div>
+
+    <!-- list of games -->
+    <div class="flex flex-col gap-2 max-w-4xl flex-grow"
+    >
+        <div *ngFor="let game of gamesFiltered"
+            style="background-color: #0e1a2b;"
+            class="flex flex-col sm:flex-row
+                justify-between
+                gap-2
+                h-80 sm:h-40
+                w-full
+            "
+        >
+            <!-- black div (image placeholder) -->
+            <div class="flex-shrink-0 bg-black w-full sm:w-24 h-40 sm:h-full flex flex-row-reverse items-center"
+            >
+                <!-- rating on mobile -->
+                <div style="
+                    background-color: #5692e8;
+                    aspect-ratio: 1;
+                    height: 40px;
+                    line-height: 40px;
+                    text-align: center;
+                    margin-right: 1rem;
+                    "
+                    class="rounded-full sm:hidden"
+                >
+                    {{(game.rating/10).toFixed(0)}}
+                </div>
+            </div>
+
+            <div class="flex flex-col flex-grow p-2">
+                <div class="text-lg">{{game.name}}</div>
+                <div class="text-sm">Release date: {{game.formated_date}}</div>
+                <div class="text-sm mt-4"
+                    style="
+                        overflow:hidden;
+                        /* line-height: 2rem; */
+                        /* max-height: 18rem; */
+                        -webkit-box-orient: vertical;
+                        display: block;
+                        display: -webkit-box;
+                        overflow: hidden !important;
+                        text-overflow: ellipsis;
+                        -webkit-line-clamp: 4;
+                        /* white-space: nowrap; */
+                    "
+                >{{game.summary}}</div>
+            </div>
+
+            <div class="hidden sm:flex items-center justify-center flex-shrink-0"
+                style="width: 100px;"
+            >
+                <div style="
+                    background-color: #5692e8;
+                    aspect-ratio: 1;
+                    height: 40px;
+                    line-height: 40px;
+                    text-align: center;
+                    "
+                    class="rounded-full"
+                >
+                    {{(game.rating/10).toFixed(0)}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
